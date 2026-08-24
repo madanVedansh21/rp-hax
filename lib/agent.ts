@@ -1,11 +1,8 @@
 import {
   fetchPayment,
   fetchOrder,
-  fetchPaymentCardDetails,
   fetchRefunds,
-  fetchOrderPayments,
-  PaymentRecord,
-  OrderRecord,
+  contestDispute,
 } from "./mcp";
 import { classifyDispute } from "./classifier";
 import { generateResponse } from "./generator";
@@ -58,18 +55,18 @@ export async function runAgent(disputeId: string): Promise<void> {
 
   const evidence: EvidenceItem[] = [];
 
-  // Step 1: Fetch Payment
+  // Step 1: Fetch Payment via Razorpay SDK
   const payment = (await safeCall(
     () => fetchPayment(dispute.payment_id),
     "FETCH_PAYMENT",
     log
-  )) as PaymentRecord | null;
+  )) as any | null;
 
   if (payment) {
     evidence.push({
       source: "fetch_payment",
       label: "Payment Record",
-      content: payment as unknown as Record<string, unknown>,
+      content: payment as Record<string, unknown>,
       available: true,
     });
   } else {
@@ -84,19 +81,19 @@ export async function runAgent(disputeId: string): Promise<void> {
   // Determine order ID (from dispute or payment record)
   const effectiveOrderId = dispute.order_id || payment?.order_id;
 
-  // Step 2: Fetch Order
+  // Step 2: Fetch Order via Razorpay SDK
   if (effectiveOrderId) {
     const order = (await safeCall(
       () => fetchOrder(effectiveOrderId),
       "FETCH_ORDER",
       log
-    )) as OrderRecord | null;
+    )) as any | null;
 
     if (order) {
       evidence.push({
         source: "fetch_order",
         label: "Order Record",
-        content: order as unknown as Record<string, unknown>,
+        content: order as Record<string, unknown>,
         available: true,
       });
     } else {
@@ -111,25 +108,7 @@ export async function runAgent(disputeId: string): Promise<void> {
     await log("FETCH_ORDER", "SKIPPED", { reason: "No order_id associated with payment" });
   }
 
-  // Step 3: Fetch Card / Payment Auth Details (if card or 3DS applicable)
-  if (payment?.method === "card" || payment?.card_id || dispute.reason_code === "fraud") {
-    const card = await safeCall(
-      () => fetchPaymentCardDetails(dispute.payment_id, payment?.card_id),
-      "FETCH_CARD_DETAILS",
-      log
-    );
-
-    if (card) {
-      evidence.push({
-        source: "fetch_payment_card_details",
-        label: "Card & 3DS Authentication Record",
-        content: card as unknown as Record<string, unknown>,
-        available: true,
-      });
-    }
-  }
-
-  // Step 4: Fetch Refunds
+  // Step 3: Fetch Refunds via Razorpay SDK
   const refunds = await safeCall(
     () => fetchRefunds(dispute.payment_id),
     "FETCH_REFUNDS",
@@ -140,27 +119,9 @@ export async function runAgent(disputeId: string): Promise<void> {
     evidence.push({
       source: "fetch_refunds",
       label: "Refund History",
-      content: { items: refunds },
+      content: { items: (refunds as any)?.items || refunds },
       available: true,
     });
-  }
-
-  // Step 5: Fetch Order Payments (for duplicate or multi-attempt dispute defense)
-  if (effectiveOrderId) {
-    const orderPayments = await safeCall(
-      () => fetchOrderPayments(effectiveOrderId),
-      "FETCH_ORDER_PAYMENTS",
-      log
-    );
-
-    if (orderPayments && Array.isArray(orderPayments) && orderPayments.length > 0) {
-      evidence.push({
-        source: "fetch_order_payments",
-        label: "Order Payment Attempts Ledger",
-        content: { attempts: orderPayments },
-        available: true,
-      });
-    }
   }
 
   // 3. Save gathered evidence to DB
@@ -185,6 +146,18 @@ export async function runAgent(disputeId: string): Promise<void> {
 
   // 6. Save response draft
   await db.upsertDraft(disputeInternalId, draft);
+
+  // 6.5 — Auto-draft to Razorpay (buys time on the deadline)
+  await safeCall(
+    () =>
+      contestDispute(dispute.dispute_id, {
+        amount: dispute.amount,
+        summary: draft.summary,
+        action: "draft",
+      }),
+    "AUTO_DRAFT",
+    log
+  );
 
   // 7. Update dispute status to ready
   await db.upsertDispute({

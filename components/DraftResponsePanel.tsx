@@ -65,15 +65,30 @@ export function DraftResponsePanel({ dispute, onRefresh }: DraftResponsePanelPro
     if (confirm("Are you sure you want to finalize and submit this evidence package to Razorpay?")) {
       try {
         setIsSubmitting(true);
-        const res = await fetch(`/api/disputes/${dispute.dispute_id}`, {
+        // 1. Save any pending merchant edits
+        await fetch(`/api/disputes/${dispute.dispute_id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            status: "submitted",
             summary,
             merchant_statement: statement,
           }),
         });
+
+        // 2. Directly contest and submit via Razorpay SDK
+        const res = await fetch(`/api/disputes/${dispute.dispute_id}/submit`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "submit",
+            draft: {
+              amount: dispute.amount,
+              summary,
+              merchant_statement: statement,
+            },
+          }),
+        });
+
         if (res.ok) {
           setIsSubmitted(true);
           if (onRefresh) onRefresh();
