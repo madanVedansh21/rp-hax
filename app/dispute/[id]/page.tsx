@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { DisputeWithDetails } from "@/lib/types";
 import { Header } from "@/components/Header";
 import { EvidencePanel } from "@/components/EvidencePanel";
@@ -14,17 +14,12 @@ import {
   ArrowLeft,
   RefreshCw,
   Play,
-  ShieldAlert,
-  CreditCard,
-  Building,
-  Calendar,
   AlertCircle,
 } from "lucide-react";
 
 export default function DisputeDetailPage() {
   const params = useParams();
   const disputeId = params?.id as string;
-  const router = useRouter();
 
   const [dispute, setDispute] = useState<DisputeWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,7 +45,6 @@ export default function DisputeDetailPage() {
 
   useEffect(() => {
     fetchDisputeDetails();
-    // Poll every 4 seconds if agent is in progress
     const interval = setInterval(() => {
       if (dispute?.status === "in_progress" || dispute?.status === "pending") {
         fetchDisputeDetails();
@@ -67,9 +61,7 @@ export default function DisputeDetailPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dispute_id: disputeId }),
       });
-      if (res.ok) {
-        fetchDisputeDetails();
-      }
+      if (res.ok) fetchDisputeDetails();
     } catch (err) {
       console.error("Failed to trigger agent:", err);
     } finally {
@@ -77,34 +69,37 @@ export default function DisputeDetailPage() {
     }
   };
 
+  /* ─── Loading state ─── */
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100">
+      <div className="min-h-screen bg-surface-canvas">
         <Header />
-        <div className="py-24 text-center text-slate-500 text-xs">
-          <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500" />
-          <span>Loading dispute evidence & draft package...</span>
+        <div className="py-32 text-center text-ink-muted text-caption">
+          <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-3 text-brand-blue" />
+          <span>Loading dispute evidence &amp; draft package…</span>
         </div>
       </div>
     );
   }
 
+  /* ─── Error state ─── */
   if (error || !dispute) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100">
+      <div className="min-h-screen bg-surface-canvas">
         <Header />
-        <div className="max-w-xl mx-auto py-24 px-4 text-center space-y-4">
+        <div className="max-w-xl mx-auto py-32 px-6 text-center space-y-5">
           <AlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
-          <h2 className="text-xl font-bold text-white">Dispute Not Found</h2>
-          <p className="text-xs text-slate-400">
-            We couldn't locate dispute <code className="font-mono text-blue-400">{disputeId}</code>.
+          <h2 className="font-display text-[24px] font-medium text-ink">Dispute Not Found</h2>
+          <p className="text-caption text-ink-muted">
+            We couldn't locate dispute{" "}
+            <code className="font-mono text-brand-blue">{disputeId}</code>.
           </p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 text-slate-200 text-xs hover:bg-slate-700"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-brand-nearblack text-white text-btn font-medium hover:opacity-90 transition-opacity"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Dashboard</span>
+            Back to Dashboard
           </Link>
         </div>
       </div>
@@ -112,39 +107,50 @@ export default function DisputeDetailPage() {
   }
 
   const formattedAmount = `₹${(dispute.amount / 100).toLocaleString("en-IN")}`;
+  const reasonLabel = dispute.reason_code.replace(/_/g, " ").toUpperCase();
+
+  const reasonChip = () => {
+    switch (dispute.reason_code) {
+      case "fraud": return "border-rose-400 text-rose-700 bg-rose-50";
+      case "not_received": return "border-amber-400 text-amber-700 bg-amber-50";
+      case "duplicate": return "border-brand-blue text-brand-blue bg-surface-pale-blue";
+      default: return "border-rule-hairline text-ink-muted bg-surface-stone";
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-surface-canvas text-ink flex flex-col">
       <Header />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        {/* Top Breadcrumb & Action Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
-          <div className="flex items-center gap-3">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 lg:px-8 py-8 space-y-8">
+
+        {/* ── Breadcrumb + action bar ── */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-rule-hairline">
+          <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xs border border-rule-hairline text-ink-muted hover:text-ink hover:border-ink-muted transition-colors"
               title="Back to Disputes"
             >
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div>
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-xl font-extrabold text-white tracking-tight">
-                  Dispute: {dispute.payment_id}
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="font-display text-[22px] font-medium text-ink tracking-tight">
+                  {dispute.payment_id}
                 </h1>
-                <span className="text-lg font-bold text-blue-400">
+                <span className="font-display text-[20px] font-semibold text-brand-blue">
                   {formattedAmount}
                 </span>
-                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-950/60 text-rose-300 border border-rose-800 uppercase tracking-wider">
-                  {dispute.reason_code.replace("_", " ")}
+                <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium border uppercase tracking-wider ${reasonChip()}`}>
+                  {reasonLabel}
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1 flex items-center gap-2">
+              <p className="text-micro text-ink-muted mt-1 flex items-center gap-2">
                 <span>Dispute Ref: {dispute.dispute_id}</span>
                 {dispute.order_id && (
                   <>
-                    <span>•</span>
+                    <span className="text-rule-hairline">·</span>
                     <span>Order: {dispute.order_id}</span>
                   </>
                 )}
@@ -152,41 +158,37 @@ export default function DisputeDetailPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 self-start sm:self-auto">
+          {/* Right: strength + deadline + re-run */}
+          <div className="flex items-center gap-4 self-start sm:self-auto">
             <StrengthIndicator
               score={dispute.strength_score}
               reason={dispute.draft?.strength_reason}
             />
-
-            <DeadlineBadge
-              respondBy={dispute.respond_by}
-              status={dispute.status}
-            />
-
+            <DeadlineBadge respondBy={dispute.respond_by} status={dispute.status} />
             <button
               onClick={handleReRunAgent}
               disabled={isRunningAgent}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 transition-colors disabled:opacity-50"
-              title="Re-run Razorpay MCP gathering and Claude AI generation"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-pill border border-rule-hairline text-btn text-ink font-medium hover:border-ink-muted transition-colors disabled:opacity-50"
+              title="Re-run Razorpay MCP gathering and AI generation"
             >
               {isRunningAgent ? (
-                <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-400" />
+                <RefreshCw className="w-3.5 h-3.5 animate-spin text-brand-blue" />
               ) : (
-                <Play className="w-3.5 h-3.5 text-blue-400" />
+                <Play className="w-3.5 h-3.5 text-brand-blue" />
               )}
-              <span>{isRunningAgent ? "Agent Running..." : "Re-run Agent"}</span>
+              <span>{isRunningAgent ? "Running…" : "Re-run Agent"}</span>
             </button>
           </div>
         </div>
 
-        {/* Two-Column Workbench Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column: Gathered Evidence (5 columns on large screens) */}
+        {/* ── Two-column workbench ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left: Evidence (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
             <EvidencePanel evidence={dispute.evidence || []} />
           </div>
 
-          {/* Right Column: AI Draft Response Workbench (7 columns on large screens) */}
+          {/* Right: AI Draft (7 cols) */}
           <div className="lg:col-span-7 space-y-6">
             <DraftResponsePanel
               dispute={dispute}
@@ -195,11 +197,12 @@ export default function DisputeDetailPage() {
           </div>
         </div>
 
-        {/* Bottom Section: Audit Log */}
-        <div className="pt-2">
+        {/* ── Agent audit log ── */}
+        <div className="pt-4 border-t border-rule-hairline">
           <AgentLogViewer logs={dispute.logs || []} />
         </div>
       </main>
     </div>
   );
 }
+

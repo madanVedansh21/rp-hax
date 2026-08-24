@@ -81,16 +81,18 @@ h1, h2, h3, .font-display {
   text-transform: uppercase;
 }
 
-/* Pill button base */
-.btn-primary {
-  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-pill bg-brand-nearblack text-white text-btn font-medium transition-opacity hover:opacity-90;
-}
+@layer components {
+  /* Pill button base */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-pill bg-brand-nearblack text-white text-btn font-medium transition-opacity hover:opacity-90;
+  }
 
-.btn-secondary {
-  @apply inline-flex items-center gap-2 text-btn font-medium text-ink underline underline-offset-4 hover:text-brand-blue transition-colors;
-}
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 text-btn font-medium text-ink underline underline-offset-4 hover:text-brand-blue transition-colors;
+  }
 
-.btn-outline {
-  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-rule-hairline text-ink text-btn font-medium hover:border-ink transition-colors;
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-rule-hairline text-ink text-btn font-medium hover:border-ink transition-colors;
+  }
 }
 

@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   Sparkles,
-  Edit3,
   Check,
   RefreshCw,
 } from "lucide-react";
@@ -102,7 +101,6 @@ export function DraftResponsePanel({ dispute, onRefresh }: DraftResponsePanelPro
   };
 
   const handleDownloadPdf = () => {
-    // Merge latest edited state for PDF
     const updatedDispute: DisputeWithDetails = {
       ...dispute,
       draft: {
@@ -117,28 +115,27 @@ export function DraftResponsePanel({ dispute, onRefresh }: DraftResponsePanelPro
 
   if (!draft) {
     return (
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-8 text-center space-y-3">
-        <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center mx-auto text-blue-600 dark:text-blue-400">
+      <div className="bg-surface-stone/30 border border-rule-hairline rounded-sm p-10 text-center space-y-3">
+        <div className="w-10 h-10 rounded-full bg-surface-pale-blue flex items-center justify-center mx-auto text-brand-blue">
           <Sparkles className="w-5 h-5 animate-spin" />
         </div>
-        <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
+        <h4 className="font-display font-medium text-ink text-body">
           AI Response Generation in Progress
         </h4>
-        <p className="text-xs text-slate-500 max-w-sm mx-auto">
-          The AI dispute specialist is synthesizing gathered Razorpay MCP evidence into a bank-ready representation package...
+        <p className="text-caption text-ink-muted max-w-sm mx-auto">
+          Synthesizing gathered Razorpay MCP evidence into a bank-ready representation package…
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+    <div className="space-y-5">
+      <div className="flex items-center justify-between pb-2 border-b border-rule-hairline">
+        <h3 className="font-display font-medium text-ink text-[16px] flex items-center gap-2">
           <span>AI Dispute Defense Package</span>
           {draft.is_edited && (
-            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800">
+            <span className="mono-label text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-300">
               Edited by Merchant
             </span>
           )}
@@ -148,18 +145,18 @@ export function DraftResponsePanel({ dispute, onRefresh }: DraftResponsePanelPro
           <button
             onClick={handleSaveDraft}
             disabled={isSaving || isSubmitted}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill border border-rule-hairline text-caption text-ink font-medium hover:border-ink-muted transition-colors disabled:opacity-50"
           >
             {savedSuccess ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-emerald-600 dark:text-emerald-400">Saved</span>
+                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-emerald-600">Saved</span>
               </>
             ) : isSaving ? (
-              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+              <RefreshCw className="w-3.5 h-3.5 animate-spin text-ink-muted" />
             ) : (
               <>
-                <Save className="w-3.5 h-3.5 text-slate-500" />
+                <Save className="w-3.5 h-3.5 text-ink-muted" />
                 <span>Save Draft</span>
               </>
             )}
@@ -168,66 +165,66 @@ export function DraftResponsePanel({ dispute, onRefresh }: DraftResponsePanelPro
       </div>
 
       {/* 1. Bank Reviewer Summary */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm space-y-2">
+      <div className="bg-surface-canvas border border-rule-hairline rounded-sm p-4 space-y-2">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+          <label className="text-caption font-semibold text-ink flex items-center gap-1.5">
             <span>1. Bank Dispute Reviewer Summary</span>
-            <span className="text-[10px] text-slate-400 font-normal">(Executive Overview)</span>
+            <span className="text-micro text-ink-muted font-normal">(Executive Overview)</span>
           </label>
-          <span className="text-[10px] text-slate-400">Editable</span>
+          <span className="mono-label text-[10px] text-ink-muted">Editable</span>
         </div>
         <textarea
           value={summary}
           onChange={(e) => setSummary(e.target.value)}
           disabled={isSubmitted}
           rows={4}
-          className="w-full text-xs text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition leading-relaxed disabled:opacity-75"
+          className="w-full text-caption text-ink bg-surface-canvas border border-rule-hairline rounded-xs p-3 focus:outline-none focus:border-ink focus:ring-1 focus:ring-ink transition leading-relaxed disabled:opacity-75"
           placeholder="Concise bank-facing summary..."
         />
       </div>
 
       {/* 2. Merchant Statement */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm space-y-2">
+      <div className="bg-surface-canvas border border-rule-hairline rounded-sm p-4 space-y-2">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+          <label className="text-caption font-semibold text-ink flex items-center gap-1.5">
             <span>2. Official Merchant Statement</span>
-            <span className="text-[10px] text-slate-400 font-normal">(First-person declaration)</span>
+            <span className="text-micro text-ink-muted font-normal">(First-person declaration)</span>
           </label>
-          <span className="text-[10px] text-slate-400">Editable</span>
+          <span className="mono-label text-[10px] text-ink-muted">Editable</span>
         </div>
         <textarea
           value={statement}
           onChange={(e) => setStatement(e.target.value)}
           disabled={isSubmitted}
           rows={4}
-          className="w-full text-xs text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition leading-relaxed disabled:opacity-75"
+          className="w-full text-caption text-ink bg-surface-canvas border border-rule-hairline rounded-xs p-3 focus:outline-none focus:border-ink focus:ring-1 focus:ring-ink transition leading-relaxed disabled:opacity-75"
           placeholder="Merchant official declaration statement..."
         />
       </div>
 
       {/* 3. Evidence Index Checklist */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm space-y-3">
-        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
+      <div className="bg-surface-canvas border border-rule-hairline rounded-sm p-4 space-y-3">
+        <h4 className="text-caption font-semibold text-ink">
           3. Structured Evidence Index
         </h4>
         <div className="space-y-2">
           {draft.evidence_index.map((item, idx) => (
             <div
               key={idx}
-              className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs space-y-1"
+              className="p-3 rounded-xs bg-surface-stone/40 border border-rule-hairline text-caption space-y-1"
             >
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-900 dark:text-slate-100">
+                <span className="font-semibold text-ink text-caption">
                   {item.item_number}. {item.title}
                 </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 font-mono">
+                <span className="mono-label text-[10px] px-2 py-0.5 rounded-full bg-surface-pale-green text-emerald-800 border border-emerald-200">
                   {item.source}
                 </span>
               </div>
-              <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+              <p className="text-ink text-micro leading-relaxed">
                 {item.summary}
               </p>
-              <p className="text-slate-500 dark:text-slate-400 text-[10px] italic">
+              <p className="text-ink-muted text-[11px] italic">
                 Relevance: {item.relevance}
               </p>
             </div>
@@ -237,12 +234,12 @@ export function DraftResponsePanel({ dispute, onRefresh }: DraftResponsePanelPro
 
       {/* 4. Missing Evidence / Recommendations */}
       {draft.missing_evidence && draft.missing_evidence.length > 0 && (
-        <div className="bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-xl p-4 shadow-sm space-y-2">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 dark:text-amber-300">
-            <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+        <div className="bg-amber-50 border border-amber-200 rounded-sm p-4 space-y-2">
+          <div className="flex items-center gap-1.5 text-caption font-semibold text-amber-900">
+            <AlertTriangle className="w-4 h-4 text-amber-700" />
             <span>Missing Evidence to Strengthen Win Rate</span>
           </div>
-          <ul className="space-y-1 pl-5 list-disc text-xs text-amber-900 dark:text-amber-200">
+          <ul className="space-y-1 pl-5 list-disc text-micro text-amber-900">
             {draft.missing_evidence.map((item, idx) => (
               <li key={idx}>{item}</li>
             ))}
@@ -251,22 +248,22 @@ export function DraftResponsePanel({ dispute, onRefresh }: DraftResponsePanelPro
       )}
 
       {/* Actions Bar */}
-      <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
         <button
           onClick={handleDownloadPdf}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 transition-colors shadow-sm"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-pill border border-rule-hairline text-btn font-medium text-ink hover:border-ink-muted transition-colors"
         >
-          <FileDown className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          <FileDown className="w-4 h-4 text-brand-blue" />
           <span>Download Evidence PDF</span>
         </button>
 
         <button
           onClick={handleSubmitToRazorpay}
           disabled={isSubmitting || isSubmitted}
-          className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-semibold rounded-lg shadow-sm transition-all ${
+          className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-pill text-btn font-medium transition-opacity ${
             isSubmitted
-              ? "bg-emerald-600 text-white cursor-default"
-              : "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/30 hover:shadow-md hover:shadow-blue-600/40"
+              ? "bg-emerald-700 text-white cursor-default"
+              : "bg-brand-nearblack text-white hover:opacity-90"
           }`}
         >
           {isSubmitted ? (
@@ -277,12 +274,12 @@ export function DraftResponsePanel({ dispute, onRefresh }: DraftResponsePanelPro
           ) : isSubmitting ? (
             <>
               <RefreshCw className="w-4 h-4 animate-spin" />
-              <span>Submitting Package...</span>
+              <span>Submitting Package…</span>
             </>
           ) : (
             <>
               <Send className="w-4 h-4" />
-              <span>Approve & Submit to Razorpay →</span>
+              <span>Approve &amp; Submit to Razorpay →</span>
             </>
           )}
         </button>
@@ -290,3 +287,4 @@ export function DraftResponsePanel({ dispute, onRefresh }: DraftResponsePanelPro
     </div>
   );
 }
+

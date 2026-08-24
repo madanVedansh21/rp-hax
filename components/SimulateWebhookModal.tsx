@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Zap, Send, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { X, Zap, Send, CheckCircle2 } from "lucide-react";
 
 interface SimulateWebhookModalProps {
   isOpen: boolean;
@@ -77,41 +77,41 @@ export function SimulateWebhookModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
-              <Zap className="w-4 h-4" />
+    <div className="fixed inset-0 z-50 bg-brand-nearblack/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-surface-canvas border border-rule-hairline rounded-md max-w-md w-full p-8 shadow-xl space-y-6">
+        <div className="flex items-start justify-between pb-4 border-b border-rule-hairline">
+          <div>
+            <div className="inline-flex items-center gap-1.5 mb-1 text-brand-coral">
+              <Zap className="w-3.5 h-3.5" />
+              <span className="mono-label text-[10px]">Test Simulation</span>
             </div>
-            <div>
-              <h3 className="font-bold text-slate-900 dark:text-white text-sm">
-                Simulate Razorpay Webhook
-              </h3>
-              <p className="text-[11px] text-slate-500">
-                Trigger <code className="text-blue-600 font-mono">payment.dispute.created</code>
-              </p>
-            </div>
+            <h3 className="font-display text-[20px] font-medium text-ink tracking-tight">
+              Simulate Razorpay Webhook
+            </h3>
+            <p className="text-micro text-ink-muted mt-0.5">
+              Trigger event <code className="font-mono text-brand-blue">payment.dispute.created</code>
+            </p>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+            className="text-ink-muted hover:text-ink p-1 rounded-xs transition-colors"
+            aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {successMsg ? (
-          <div className="py-6 text-center space-y-2">
-            <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto animate-bounce" />
-            <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+          <div className="py-8 text-center space-y-3">
+            <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto animate-bounce" />
+            <p className="text-caption font-medium text-emerald-800">
               {successMsg}
             </p>
           </div>
         ) : (
-          <form onSubmit={handleFireWebhook} className="space-y-3.5">
-            <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+          <form onSubmit={handleFireWebhook} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="block text-micro font-semibold text-ink">
                 Dispute Reason Code
               </label>
               <select
@@ -123,7 +123,7 @@ export function SimulateWebhookModal({
                   else if (code === "not_received") setPaymentId("pay_DEF456");
                   else if (code === "duplicate") setPaymentId("pay_GHI789");
                 }}
-                className="w-full text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full text-caption bg-surface-canvas border border-rule-hairline rounded-xs p-2.5 text-ink focus:border-ink focus:ring-1 focus:ring-ink focus:outline-none"
               >
                 <option value="fraud">fraud (Card misuse / 3DS test case)</option>
                 <option value="not_received">not_received (Goods not delivered)</option>
@@ -134,8 +134,8 @@ export function SimulateWebhookModal({
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+            <div className="space-y-1.5">
+              <label className="block text-micro font-semibold text-ink">
                 Payment ID (Mapped to MCP Fixtures)
               </label>
               <input
@@ -143,12 +143,12 @@ export function SimulateWebhookModal({
                 value={paymentId}
                 onChange={(e) => setPaymentId(e.target.value)}
                 placeholder="pay_ABC123"
-                className="w-full text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full text-caption font-mono bg-surface-canvas border border-rule-hairline rounded-xs p-2.5 text-ink focus:border-ink focus:ring-1 focus:ring-ink focus:outline-none"
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+            <div className="space-y-1.5">
+              <label className="block text-micro font-semibold text-ink">
                 Dispute Amount (INR ₹)
               </label>
               <input
@@ -156,25 +156,25 @@ export function SimulateWebhookModal({
                 value={amountRupees}
                 onChange={(e) => setAmountRupees(e.target.value)}
                 placeholder="8500"
-                className="w-full text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full text-caption bg-surface-canvas border border-rule-hairline rounded-xs p-2.5 text-ink focus:border-ink focus:ring-1 focus:ring-ink focus:outline-none"
               />
             </div>
 
-            <div className="pt-2 flex items-center justify-end gap-2">
+            <div className="pt-3 flex items-center justify-end gap-3 border-t border-rule-hairline">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-3.5 py-2 text-xs font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="text-btn font-medium text-ink-muted hover:text-ink px-4 py-2 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isFiring}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-600/30 transition-all disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-pill bg-brand-nearblack text-white text-btn font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>{isFiring ? "Ingesting..." : "Fire Webhook"}</span>
+                <span>{isFiring ? "Ingesting…" : "Fire Webhook"}</span>
               </button>
             </div>
           </form>
@@ -183,3 +183,6 @@ export function SimulateWebhookModal({
     </div>
   );
 }
+
+
+

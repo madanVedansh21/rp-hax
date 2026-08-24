@@ -6,11 +6,7 @@ import {
   Terminal,
   ChevronDown,
   ChevronUp,
-  CheckCircle2,
-  AlertCircle,
   Clock,
-  Code,
-  Zap,
 } from "lucide-react";
 
 interface AgentLogViewerProps {
@@ -37,49 +33,49 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "SUCCESS":
-        return "text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800";
+        return "text-emerald-700 bg-surface-pale-green border-emerald-200";
       case "FAILED":
-        return "text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50 border-rose-200 dark:border-rose-800";
+        return "text-rose-700 bg-rose-50 border-rose-200";
       case "SKIPPED":
-        return "text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700";
+        return "text-ink-muted bg-surface-stone border-rule-hairline";
       default:
-        return "text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 border-amber-200 dark:border-amber-800";
+        return "text-amber-700 bg-amber-50 border-amber-200";
     }
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+    <div className="bg-surface-canvas border border-rule-hairline rounded-sm overflow-hidden">
       {/* Header */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="px-4 py-3 bg-slate-50/80 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between cursor-pointer select-none"
+        className="px-5 py-3.5 bg-surface-stone/40 border-b border-rule-hairline flex items-center justify-between cursor-pointer select-none"
       >
-        <div className="flex items-center gap-2.5">
-          <Terminal className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-          <span className="font-bold text-xs text-slate-900 dark:text-white uppercase tracking-wider">
+        <div className="flex items-center gap-3">
+          <Terminal className="w-4 h-4 text-ink" />
+          <span className="mono-label text-[12px] font-semibold text-ink">
             Agent Execution Audit Trail
           </span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 font-mono font-medium">
+          <span className="mono-label text-[10px] px-2.5 py-0.5 rounded-full bg-surface-canvas border border-rule-hairline text-ink-muted">
             {logs.length} events
           </span>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="text-[11px] text-slate-500 flex items-center gap-1.5 font-mono">
+          <div className="text-[11px] text-ink-muted flex items-center gap-1.5 font-mono">
             <Clock className="w-3.5 h-3.5" />
             <span>Total execution: {(totalDurationMs / 1000).toFixed(2)}s</span>
           </div>
-          <button className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <button className="text-ink-muted hover:text-ink">
             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
         </div>
       </div>
 
-      {/* Logs Content */}
+      {/* Logs Content — near-black dark product terminal environment */}
       {isOpen && (
-        <div className="p-4 space-y-1.5 bg-slate-950 text-slate-200 font-mono text-xs max-h-80 overflow-y-auto">
+        <div className="p-4 space-y-1 bg-brand-nearblack text-slate-200 font-mono text-micro max-h-80 overflow-y-auto">
           {logs.length === 0 ? (
-            <div className="text-slate-500 py-3 text-center text-xs">
+            <div className="text-ink-muted py-4 text-center text-caption">
               No audit logs recorded for this dispute yet.
             </div>
           ) : (
@@ -89,18 +85,18 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
               return (
                 <div
                   key={idx}
-                  className="rounded hover:bg-slate-900/90 transition-colors p-1.5 border border-transparent hover:border-slate-800"
+                  className="rounded-xs hover:bg-white/5 transition-colors p-2 border border-transparent hover:border-white/10"
                 >
                   <div className="flex items-center justify-between gap-3 flex-wrap">
                     <div className="flex items-center gap-3">
                       <span className="text-slate-500 text-[11px]">
                         {formatTime(item.created_at)}
                       </span>
-                      <span className="font-bold text-blue-400 text-xs">
+                      <span className="font-semibold text-brand-blue text-micro">
                         {item.action}
                       </span>
                       <span
-                        className={`text-[10px] px-1.5 py-0.2 rounded border font-semibold ${getStatusBadge(
+                        className={`text-[10px] px-1.5 py-0.2 rounded border font-medium ${getStatusBadge(
                           item.status
                         )}`}
                       >
@@ -117,7 +113,7 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
                       {item.detail && Object.keys(item.detail).length > 0 && (
                         <button
                           onClick={() => setExpandedIndex(isDetailsOpen ? null : idx)}
-                          className="text-slate-400 hover:text-white text-[10px] underline"
+                          className="text-slate-400 hover:text-white text-[10px] underline underline-offset-2"
                         >
                           {isDetailsOpen ? "hide payload" : "view payload"}
                         </button>
@@ -126,7 +122,7 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
                   </div>
 
                   {isDetailsOpen && item.detail && (
-                    <pre className="mt-2 p-2 rounded bg-slate-900 text-emerald-400 text-[11px] overflow-x-auto border border-slate-800">
+                    <pre className="mt-2 p-2.5 rounded-xs bg-black/50 text-emerald-400 text-[11px] overflow-x-auto border border-white/10">
                       {JSON.stringify(item.detail, null, 2)}
                     </pre>
                   )}
@@ -139,3 +135,6 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
     </div>
   );
 }
+
+
+
