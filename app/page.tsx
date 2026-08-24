@@ -96,48 +96,63 @@ export default function LandingPage() {
           </div>
 
           {/* ── 2. Signature Two-Card Media Composition (Cohere Hero Spec) ── */}
-          <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            {/* Left Card: Atmospheric Gradient + Floating Agent Console (~65% width) */}
+            {/* Left Card: Atmospheric Gradient + Interactive Agent Console (~65% width) */}
             <div
-              className="lg:col-span-8 rounded-[22px] p-6 sm:p-10 relative overflow-hidden border border-rule-hairline/60 flex items-center justify-center min-h-[380px]"
+              className="lg:col-span-8 rounded-[22px] p-6 sm:p-9 relative overflow-hidden border border-rule-hairline/60 flex items-center justify-center min-h-[400px]"
               style={{
                 background:
-                  "radial-gradient(circle at 15% 20%, rgba(255, 119, 89, 0.22), transparent 45%), radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.3), transparent 50%), radial-gradient(circle at 50% 85%, rgba(15, 23, 42, 0.95), #090d16)",
+                  "radial-gradient(circle at 15% 20%, rgba(255, 119, 89, 0.24), transparent 45%), radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.35), transparent 50%), radial-gradient(circle at 50% 85%, rgba(15, 23, 42, 0.98), #090d16)",
               }}
             >
               {/* Floating Dark Agent Console Mockup */}
               <div className="w-full max-w-xl bg-[#111216]/95 border border-white/10 rounded-xl p-6 sm:p-7 shadow-2xl backdrop-blur space-y-5">
                 {/* Agent Header */}
-                <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-sm bg-white text-ink flex items-center justify-center font-display font-bold text-base shadow-sm">
-                    A
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-sm bg-white text-ink flex items-center justify-center font-display font-bold text-base shadow-sm">
+                      A
+                    </div>
+                    <div>
+                      <h3 className="font-display font-medium text-white text-[17px] tracking-tight">
+                        Autonomous Chargeback Defense Agent
+                      </h3>
+                      <p className="text-[11px] text-slate-400 font-mono">
+                        Powered by Razorpay MCP &amp; Claude 3.5 Sonnet
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-display font-medium text-white text-[17px] tracking-tight">
-                      Chargeback Defense Agent
-                    </h3>
-                    <p className="text-[11px] text-slate-400 font-mono">
-                      Razorpay MCP · Autonomous Pipeline
-                    </p>
-                  </div>
+
+                  <span className="mono-label text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hidden sm:flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    LIVE
+                  </span>
                 </div>
 
-                {/* Status Chips */}
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="mono-label text-[10px] px-2.5 py-1 rounded-full bg-white/5 text-emerald-400 border border-white/10 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                    READY
-                  </span>
-                  <span className="mono-label text-[10px] px-2.5 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10">
-                    RAZORPAY MCP
-                  </span>
-                  <span className="mono-label text-[10px] px-2.5 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10">
-                    3DS VERIFIED
-                  </span>
-                  <span className="mono-label text-[10px] px-2.5 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10 hidden sm:inline-block">
-                    CLAUDE 3.5
-                  </span>
+                {/* Scenario Quick Selector Chips */}
+                <div className="space-y-1.5">
+                  <div className="text-[11px] text-slate-400 font-mono">Select test case:</div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {[
+                      { label: "💳 Fraud (3DS Passed)", id: "pay_ABC123", text: "Defend against fraud chargeback for payment pay_ABC123 (₹8,500)" },
+                      { label: "📦 Goods Not Received", id: "pay_DEF456", text: "Compile courier tracking & AWB proof for payment pay_DEF456 (₹12,400)" },
+                      { label: "🔄 Duplicate Charge", id: "pay_GHI789", text: "Reconcile duplicate settlement & refund records for payment pay_GHI789 (₹4,200)" },
+                    ].map((scenario, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setPromptInput(scenario.text)}
+                        className={`mono-label text-[10px] px-2.5 py-1 rounded-full transition-colors border ${
+                          promptInput === scenario.text
+                            ? "bg-brand-coral text-white border-brand-coral font-semibold"
+                            : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:border-white/20"
+                        }`}
+                      >
+                        {scenario.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Interactive Prompt Field */}
@@ -150,56 +165,69 @@ export default function LandingPage() {
                     value={promptInput}
                     onChange={(e) => setPromptInput(e.target.value)}
                     className="w-full bg-transparent text-caption text-slate-100 placeholder-slate-500 focus:outline-none px-2"
-                    placeholder="Enter payment ID or dispute prompt..."
+                    placeholder="Enter dispute prompt or payment reference..."
                   />
                   <button
                     type="submit"
                     disabled={isSimulating}
-                    className="px-4 py-1.5 rounded-pill bg-white text-ink text-btn font-semibold hover:bg-slate-200 transition-colors shrink-0 flex items-center gap-1"
+                    className="px-4 py-2 rounded-pill bg-white text-ink text-btn font-semibold hover:bg-slate-200 transition-colors shrink-0 flex items-center gap-1.5 shadow"
                   >
-                    <span>{isSimulating ? "Loading…" : "Go"}</span>
+                    <span>{isSimulating ? "Launching…" : "Investigate"}</span>
                     {!isSimulating && <ArrowRight className="w-3.5 h-3.5" />}
                   </button>
                 </form>
 
-                <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono pt-1">
-                  <span>Target: Bank Representation Package</span>
-                  <span className="text-emerald-400">● 100% Win Format</span>
+                {/* Status Chips Footer */}
+                <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono pt-1 border-t border-white/5">
+                  <div className="flex items-center gap-3">
+                    <span>MCP Tools: <strong className="text-slate-200">5 active</strong></span>
+                    <span>·</span>
+                    <span>Reason Engine: <strong className="text-slate-200">Razorpay SDK</strong></span>
+                  </div>
+                  <span className="text-emerald-400 hidden sm:inline-block">● Bank Admissible Format</span>
                 </div>
               </div>
             </div>
 
             {/* Right Card: Companion Sage/Teal Gradient with Glowing Coral Light Orb (~35% width) */}
             <div
-              className="lg:col-span-4 rounded-[22px] p-8 border border-rule-hairline/60 relative overflow-hidden flex flex-col justify-between min-h-[380px]"
+              className="lg:col-span-4 rounded-[22px] p-8 border border-rule-hairline/60 relative overflow-hidden flex flex-col justify-between min-h-[400px]"
               style={{
                 background:
                   "radial-gradient(circle at 75% 25%, rgba(255, 140, 110, 0.75), rgba(255, 119, 89, 0.25) 30%, transparent 65%), radial-gradient(circle at 20% 80%, rgba(0, 60, 51, 0.95), #021a16)",
               }}
             >
-              <div className="space-y-2">
-                <span className="mono-label text-[10px] text-white/80 border border-white/20 bg-white/10 px-2.5 py-0.5 rounded-full">
-                  Hackathon Metrics
+              <div className="space-y-3">
+                <span className="mono-label text-[10px] text-white/90 border border-white/25 bg-white/10 px-3 py-1 rounded-full">
+                  Razorpay AI Buildathon
                 </span>
-                <h4 className="font-display font-medium text-white text-[24px] leading-tight pt-2">
+                <h4 className="font-display font-medium text-white text-[24px] sm:text-[26px] leading-tight pt-1">
                   Zero Human Delay in Evidence Gathering.
                 </h4>
+                <p className="text-micro text-slate-300 leading-relaxed">
+                  Autonomously contests disputes within milliseconds of receiving webhooks, preventing 60–70% of winnable revenue loss.
+                </p>
               </div>
 
-              <div className="space-y-4 pt-8">
-                <div className="p-3.5 rounded-sm bg-black/40 border border-white/10 backdrop-blur text-white text-caption space-y-1">
+              <div className="space-y-4 pt-6">
+                <div className="p-4 rounded-sm bg-black/40 border border-white/10 backdrop-blur text-white text-caption space-y-2">
                   <div className="flex justify-between text-micro text-slate-300 font-mono">
-                    <span>Evidence Admissibility</span>
-                    <span className="text-emerald-300 font-bold">100%</span>
+                    <span>Evidence Strength Admissibility</span>
+                    <span className="text-emerald-300 font-bold">STRONG (100%)</span>
                   </div>
-                  <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-emerald-400 h-full w-full" />
+                  <div className="w-full bg-white/15 h-2 rounded-full overflow-hidden">
+                    <div className="bg-emerald-400 h-full w-full rounded-full" />
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between text-micro text-slate-200 font-mono">
-                  <span>Track: AI Revenue Recovery</span>
-                  <span className="underline underline-offset-4">Razorpay MCP</span>
+                  <span>Track 03: Revenue Recovery</span>
+                  <Link
+                    href="/dashboard"
+                    className="underline underline-offset-4 font-semibold hover:text-white transition-colors"
+                  >
+                    Open Desk →
+                  </Link>
                 </div>
               </div>
             </div>
