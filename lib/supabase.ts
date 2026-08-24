@@ -49,7 +49,8 @@ class MockDBStore {
   }
 
   async getDisputeByDisputeId(disputeId: string): Promise<Dispute | null> {
-    for (const d of this.disputes.values()) {
+    const list = Array.from(this.disputes.values());
+    for (const d of list) {
       if (d.dispute_id === disputeId || d.id === disputeId) {
         return d;
       }
