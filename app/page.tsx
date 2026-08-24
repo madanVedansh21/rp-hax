@@ -6,15 +6,12 @@ import { Header } from "@/components/Header";
 import { DisputeCard } from "@/components/DisputeCard";
 import { SimulateWebhookModal } from "@/components/SimulateWebhookModal";
 import {
-  ShieldAlert,
   TrendingUp,
   Clock,
   CheckCircle,
-  Sparkles,
   RefreshCw,
   AlertTriangle,
   Zap,
-  Layers,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -39,7 +36,6 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchDisputes();
-    // Auto refresh every 5 seconds to catch live agent updates
     const interval = setInterval(fetchDisputes, 5000);
     return () => clearInterval(interval);
   }, [fetchDisputes]);
@@ -62,178 +58,200 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-surface-canvas text-ink">
       <Header
         onSeeded={fetchDisputes}
         onSimulateWebhook={() => setIsModalOpen(true)}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Banner / Value Proposition */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 border border-blue-900/50 p-6 sm:p-8">
-          <div className="relative z-10 max-w-3xl space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold border border-blue-400/30">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Razorpay AI Revenue Recovery Engine</span>
+      <main className="max-w-7xl mx-auto px-6 lg:px-8">
+
+        {/* ── Hero section ── white canvas, large display type */}
+        <section className="pt-16 pb-12 border-b border-rule-hairline">
+          <div className="max-w-3xl">
+            {/* Mono label / category chip */}
+            <div className="inline-flex items-center gap-2 mb-6">
+              <span className="mono-label text-[11px] text-brand-coral border border-brand-coral px-3 py-1 rounded-full">
+                AI Revenue Recovery
+              </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Autonomous Chargeback Defense & Evidence Builder
+
+            {/* Display headline — tight, carved */}
+            <h1 className="font-display text-[42px] sm:text-[56px] font-medium text-ink leading-[1.05] tracking-[-1px] mb-5">
+              Autonomous Chargeback<br />
+              Defense &amp; Evidence Builder
             </h1>
-            <p className="text-sm text-slate-300 leading-relaxed">
-              When a dispute arrives, ChargebackAI gathers multi-source evidence across Razorpay MCP tools, analyzes bank reason codes, and generates bank-ready defense packages before deadlines expire.
-            </p>
-          </div>
-        </div>
 
-        {/* Metrics Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Card 1: Revenue at Risk */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm space-y-1">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>Revenue at Risk</span>
-              <AlertTriangle className="w-4 h-4 text-amber-500" />
-            </div>
-            <div className="text-2xl font-bold text-white tracking-tight">
-              ₹{(totalAtRiskPaise / 100).toLocaleString("en-IN")}
-            </div>
-            <p className="text-[11px] text-slate-400">
-              Across {activeCount} active merchant disputes
+            <p className="text-body-lg text-ink-muted leading-relaxed max-w-2xl mb-8">
+              When a dispute arrives, ChargebackAI gathers multi-source evidence across
+              Razorpay MCP tools, analyzes bank reason codes, and generates bank-ready
+              defense packages before deadlines expire.
             </p>
-          </div>
 
-          {/* Card 2: Active Disputes */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm space-y-1">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>Active Disputes</span>
-              <Clock className="w-4 h-4 text-blue-500" />
+            {/* CTA row */}
+            <div className="flex items-center gap-6">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-pill bg-brand-nearblack text-white text-btn font-medium hover:opacity-90 transition-opacity"
+              >
+                <Zap className="w-4 h-4" />
+                Simulate a Dispute
+              </button>
+              <button
+                onClick={async () => {
+                  await fetch("/api/demo/seed", { method: "POST" });
+                  fetchDisputes();
+                }}
+                className="text-btn font-medium text-ink underline underline-offset-4 hover:text-brand-blue transition-colors"
+              >
+                Load demo cases →
+              </button>
             </div>
-            <div className="text-2xl font-bold text-blue-400 tracking-tight">
-              {activeCount}
-            </div>
-            <p className="text-[11px] text-slate-400">
-              Requiring response within 7-14 days
-            </p>
           </div>
+        </section>
 
-          {/* Card 3: Strong Evidence Rate */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm space-y-1">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>Strong Evidence Rate</span>
-              <TrendingUp className="w-4 h-4 text-emerald-500" />
+        {/* ── Metrics strip ── bordered stone cards, flat, no shadows */}
+        <section className="py-10 border-b border-rule-hairline">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-rule-hairline border border-rule-hairline rounded-sm overflow-hidden">
+
+            {/* Card 1: Revenue at Risk */}
+            <div className="bg-surface-canvas p-6 space-y-1">
+              <div className="flex items-center justify-between mb-3">
+                <span className="mono-label text-[11px] text-ink-muted">Revenue at Risk</span>
+                <AlertTriangle className="w-4 h-4 text-brand-coral" />
+              </div>
+              <div className="font-display text-[32px] font-medium text-ink leading-none tracking-tight">
+                ₹{(totalAtRiskPaise / 100).toLocaleString("en-IN")}
+              </div>
+              <p className="text-micro text-ink-muted pt-1">
+                Across {activeCount} active disputes
+              </p>
             </div>
-            <div className="text-2xl font-bold text-emerald-400 tracking-tight">
-              {disputes.length > 0
-                ? `${Math.round((strongEvidenceCount / disputes.length) * 100)}%`
-                : "100%"}
+
+            {/* Card 2: Active Disputes */}
+            <div className="bg-surface-canvas p-6 space-y-1">
+              <div className="flex items-center justify-between mb-3">
+                <span className="mono-label text-[11px] text-ink-muted">Active Disputes</span>
+                <Clock className="w-4 h-4 text-brand-blue" />
+              </div>
+              <div className="font-display text-[32px] font-medium text-brand-blue leading-none tracking-tight">
+                {activeCount}
+              </div>
+              <p className="text-micro text-ink-muted pt-1">
+                Requiring response within 7–14 days
+              </p>
             </div>
-            <p className="text-[11px] text-slate-400">
-              {strongEvidenceCount} of {disputes.length} cases rated STRONG
-            </p>
+
+            {/* Card 3: Strong Evidence Rate */}
+            <div className="bg-surface-canvas p-6 space-y-1">
+              <div className="flex items-center justify-between mb-3">
+                <span className="mono-label text-[11px] text-ink-muted">Strong Evidence Rate</span>
+                <TrendingUp className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div className="font-display text-[32px] font-medium text-emerald-700 leading-none tracking-tight">
+                {disputes.length > 0
+                  ? `${Math.round((strongEvidenceCount / disputes.length) * 100)}%`
+                  : "—"}
+              </div>
+              <p className="text-micro text-ink-muted pt-1">
+                {strongEvidenceCount} of {disputes.length} cases rated STRONG
+              </p>
+            </div>
+
+            {/* Card 4: Submitted */}
+            <div className="bg-surface-canvas p-6 space-y-1">
+              <div className="flex items-center justify-between mb-3">
+                <span className="mono-label text-[11px] text-ink-muted">Packages Submitted</span>
+                <CheckCircle className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div className="font-display text-[32px] font-medium text-ink leading-none tracking-tight">
+                {submittedCount}
+              </div>
+              <p className="text-micro text-ink-muted pt-1">
+                Submitted to Razorpay dispute desk
+              </p>
+            </div>
           </div>
+        </section>
 
-          {/* Card 4: Submitted / Protected */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm space-y-1">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>Packages Submitted</span>
-              <CheckCircle className="w-4 h-4 text-emerald-400" />
-            </div>
-            <div className="text-2xl font-bold text-white tracking-tight">
-              {submittedCount}
-            </div>
-            <p className="text-[11px] text-slate-400">
-              Submitted to Razorpay dispute desk
-            </p>
-          </div>
-        </div>
-
-        {/* Disputes Section Header & Tabs */}
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* ── Disputes section ── */}
+        <section className="py-10 space-y-6">
+          {/* Section header + filter pills */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-lg font-bold text-white">Merchant Disputes</h2>
-              <p className="text-xs text-slate-400">
+              <h2 className="font-display text-[22px] font-medium text-ink tracking-tight">
+                Merchant Disputes
+              </h2>
+              <p className="text-caption text-ink-muted mt-0.5">
                 Track incoming webhooks, review gathered evidence, and submit bank-ready packages
               </p>
             </div>
 
-            {/* Filter Tabs */}
-            <div className="flex items-center gap-1.5 p-1 bg-slate-900 border border-slate-800 rounded-lg self-start sm:self-auto">
-              <button
-                onClick={() => setFilter("all")}
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                  filter === "all"
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                All ({disputes.length})
-              </button>
-              <button
-                onClick={() => setFilter("active")}
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                  filter === "active"
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                Active ({activeCount})
-              </button>
-              <button
-                onClick={() => setFilter("submitted")}
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                  filter === "submitted"
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                Submitted ({submittedCount})
-              </button>
+            {/* Filter pill tabs — blog-filter-chip style */}
+            <div className="flex items-center gap-2">
+              {[
+                { key: "all", label: `All (${disputes.length})` },
+                { key: "active", label: `Active (${activeCount})` },
+                { key: "submitted", label: `Submitted (${submittedCount})` },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setFilter(tab.key as typeof filter)}
+                  className={`px-4 py-1.5 rounded-xl text-caption font-medium transition-colors border ${
+                    filter === tab.key
+                      ? "bg-brand-nearblack text-white border-brand-nearblack"
+                      : "bg-surface-canvas text-ink border-rule-hairline hover:border-ink-muted"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Dispute Cards List */}
+          {/* Dispute list */}
           {loading ? (
-            <div className="py-16 text-center text-slate-500 text-xs">
-              <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500" />
-              <span>Loading merchant dispute ledger...</span>
+            <div className="py-20 text-center text-ink-muted text-caption">
+              <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-3 text-brand-blue" />
+              <span>Loading dispute ledger…</span>
             </div>
           ) : filteredDisputes.length === 0 ? (
-            <div className="border border-dashed border-slate-800 bg-slate-900/40 rounded-2xl p-12 text-center space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-blue-950/60 border border-blue-800/50 flex items-center justify-center mx-auto text-blue-400">
-                <Zap className="w-6 h-6" />
+            <div className="border border-dashed border-rule-light rounded-md p-16 text-center space-y-5 bg-surface-stone/30">
+              <div className="w-12 h-12 rounded-sm bg-surface-stone border border-rule-hairline flex items-center justify-center mx-auto">
+                <Zap className="w-5 h-5 text-ink-muted" />
               </div>
-              <div className="space-y-1 max-w-md mx-auto">
-                <h3 className="font-bold text-white text-base">No disputes found</h3>
-                <p className="text-xs text-slate-400">
+              <div className="space-y-2 max-w-sm mx-auto">
+                <h3 className="font-display text-[18px] font-medium text-ink">No disputes found</h3>
+                <p className="text-caption text-ink-muted">
                   Seed sample disputes with realistic Indian merchant data or trigger a mock Razorpay webhook.
                 </p>
               </div>
-              <div className="pt-2 flex items-center justify-center gap-3">
+              <div className="flex items-center justify-center gap-4 pt-2">
                 <button
                   onClick={async () => {
                     await fetch("/api/demo/seed", { method: "POST" });
                     fetchDisputes();
                   }}
-                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-colors"
+                  className="px-5 py-2.5 rounded-pill bg-brand-nearblack text-white text-btn font-medium hover:opacity-90 transition-opacity"
                 >
                   Seed 3 Demo Disputes
                 </button>
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
+                  className="text-btn font-medium text-ink underline underline-offset-4 hover:text-brand-blue transition-colors"
                 >
                   Simulate Webhook
                 </button>
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-px border border-rule-hairline rounded-sm overflow-hidden">
               {filteredDisputes.map((dispute) => (
                 <DisputeCard key={dispute.id} dispute={dispute} />
               ))}
             </div>
           )}
-        </div>
+        </section>
       </main>
 
       <SimulateWebhookModal
@@ -244,3 +262,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+
