@@ -95,11 +95,11 @@ export default function DisputeDetailPage() {
             <code className="font-mono text-brand-blue">{disputeId}</code>.
           </p>
           <Link
-            href="/"
+            href="/dashboard"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-brand-nearblack text-white text-btn font-medium hover:opacity-90 transition-opacity"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            Back to Dashboard
+            Back to Dispute Desk
           </Link>
         </div>
       </div>
@@ -128,9 +128,9 @@ export default function DisputeDetailPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-rule-hairline">
           <div className="flex items-center gap-4">
             <Link
-              href="/"
+              href="/dashboard"
               className="p-2 rounded-xs border border-rule-hairline text-ink-muted hover:text-ink hover:border-ink-muted transition-colors"
-              title="Back to Disputes"
+              title="Back to Disputes Desk"
             >
               <ArrowLeft className="w-4 h-4" />
             </Link>
