@@ -33,13 +33,13 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "SUCCESS":
-        return "text-emerald-700 bg-surface-pale-green border-emerald-200";
+        return "text-emerald-800 bg-surface-pale-green border-emerald-200";
       case "FAILED":
-        return "text-rose-700 bg-rose-50 border-rose-200";
+        return "text-rose-800 bg-rose-50 border-rose-200";
       case "SKIPPED":
         return "text-ink-muted bg-surface-stone border-rule-hairline";
       default:
-        return "text-amber-700 bg-amber-50 border-amber-200";
+        return "text-amber-800 bg-amber-50 border-amber-200";
     }
   };
 
@@ -71,11 +71,11 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
         </div>
       </div>
 
-      {/* Logs Content — near-black dark product terminal environment */}
+      {/* Logs Content — clean light theme */}
       {isOpen && (
-        <div className="p-4 space-y-1 bg-brand-nearblack text-slate-200 font-mono text-micro max-h-80 overflow-y-auto">
+        <div className="p-3 bg-surface-canvas text-ink font-mono text-micro max-h-80 overflow-y-auto divide-y divide-rule-hairline">
           {logs.length === 0 ? (
-            <div className="text-ink-muted py-4 text-center text-caption">
+            <div className="text-ink-muted py-6 text-center text-caption font-sans">
               No audit logs recorded for this dispute yet.
             </div>
           ) : (
@@ -85,18 +85,18 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
               return (
                 <div
                   key={idx}
-                  className="rounded-xs hover:bg-white/5 transition-colors p-2 border border-transparent hover:border-white/10"
+                  className="py-2.5 px-3 hover:bg-surface-stone/40 transition-colors rounded-xs"
                 >
                   <div className="flex items-center justify-between gap-3 flex-wrap">
                     <div className="flex items-center gap-3">
-                      <span className="text-slate-500 text-[11px]">
+                      <span className="text-ink-muted text-[11px]">
                         {formatTime(item.created_at)}
                       </span>
-                      <span className="font-semibold text-brand-blue text-micro">
+                      <span className="font-semibold text-ink text-micro">
                         {item.action}
                       </span>
                       <span
-                        className={`text-[10px] px-1.5 py-0.2 rounded border font-medium ${getStatusBadge(
+                        className={`text-[10px] px-2 py-0.5 rounded border font-medium ${getStatusBadge(
                           item.status
                         )}`}
                       >
@@ -104,16 +104,16 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                       {item.duration_ms !== undefined && item.duration_ms > 0 && (
-                        <span className="text-slate-400 text-[11px]">
+                        <span className="text-ink-muted text-[11px]">
                           {item.duration_ms}ms
                         </span>
                       )}
                       {item.detail && Object.keys(item.detail).length > 0 && (
                         <button
                           onClick={() => setExpandedIndex(isDetailsOpen ? null : idx)}
-                          className="text-slate-400 hover:text-white text-[10px] underline underline-offset-2"
+                          className="text-ink-muted hover:text-ink text-[11px] underline underline-offset-2"
                         >
                           {isDetailsOpen ? "hide payload" : "view payload"}
                         </button>
@@ -122,7 +122,7 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
                   </div>
 
                   {isDetailsOpen && item.detail && (
-                    <pre className="mt-2 p-2.5 rounded-xs bg-black/50 text-emerald-400 text-[11px] overflow-x-auto border border-white/10">
+                    <pre className="mt-2.5 p-3 rounded-xs bg-surface-stone/60 text-ink text-[11px] overflow-x-auto border border-rule-hairline">
                       {JSON.stringify(item.detail, null, 2)}
                     </pre>
                   )}
@@ -135,6 +135,7 @@ export function AgentLogViewer({ logs }: AgentLogViewerProps) {
     </div>
   );
 }
+
 
 
 
